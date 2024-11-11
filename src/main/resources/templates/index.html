@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Product Catalog</title>
+</head>
+<body>
+<h1>Product Catalog</h1>
+
+<!-- Форма додавання нової категорії -->
+<form action="/addCategory" method="post">
+    <input type="text" name="categoryName" placeholder="New Category" required>
+    <button type="submit">Add Category</button>
+</form>
+
+<!-- Рекурсивний метод для відображення категорій та підкатегорій -->
+<ul>
+    <li th:each="category : ${categories}">
+        <div>
+            <strong th:text="${category.name}"></strong>
+
+            <!-- Форма додавання підкатегорії до поточної категорії -->
+            <form action="/addSubcategory" method="post" style="display:inline;">
+                <input type="hidden" name="parentCategoryName" th:value="${category.name}">
+                <input type="text" name="subcategoryName" placeholder="New Subcategory" required>
+                <button type="submit">Add Subcategory</button>
+            </form>
+
+            <!-- Форма додавання товару до поточної категорії -->
+            <form action="/addProduct" method="post" style="display:inline;">
+                <input type="hidden" name="categoryName" th:value="${category.name}">
+                <input type="text" name="productName" placeholder="Product Name" required>
+                <input type="text" name="description" placeholder="Description" required>
+                <input type="number" name="price" placeholder="Price" required step="0.01">
+                <button type="submit">Add Product</button>
+            </form>
+        </div>
+
+        <!-- Рекурсивний виклик для відображення вкладених підкатегорій -->
+        <ul th:each="subcategory : ${category.subcategories}">
+            <li>
+                <div>
+                    <strong th:text="${subcategory.name}"></strong>
+
+                    <!-- Форма додавання підкатегорії до поточної підкатегорії -->
+                    <form action="/addSubcategory" method="post" style="display:inline;">
+                        <input type="hidden" name="parentCategoryName" th:value="${subcategory.name}">
+                        <input type="text" name="subcategoryName" placeholder="New Subcategory" required>
+                        <button type="submit">Add Subcategory</button>
+                    </form>
+
+                    <!-- Форма додавання товару до поточної підкатегорії -->
+                    <form action="/addProduct" method="post" style="display:inline;">
+                        <input type="hidden" name="categoryName" th:value="${subcategory.name}">
+                        <input type="text" name="productName" placeholder="Product Name" required>
+                        <input type="text" name="description" placeholder="Description" required>
+                        <input type="number" name="price" placeholder="Price" required step="0.01">
+                        <button type="submit">Add Product</button>
+                    </form>
+                </div>
+
+                <!-- Рекурсивний виклик для вкладених підкатегорій -->
+                <ul th:each="subsubcategory : ${subcategory.subcategories}">
+                    <li th:insert="~{::li}"></li>
+                </ul>
+
+                <!-- Відображення товарів у поточній підкатегорії -->
+                <ul th:if="${subcategory.products.size() > 0}">
+                    <li th:each="product : ${subcategory.products}">
+                        <span th:text="${product.name} + ' - ' + ${product.description} + ' - $' + ${product.price}"></span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <!-- Відображення товарів у поточній категорії -->
+        <ul th:if="${category.products.size() > 0}">
+            <li th:each="product : ${category.products}">
+                <span th:text="${product.name} + ' - ' + ${product.description} + ' - $' + ${product.price}"></span>
+            </li>
+        </ul>
+    </li>
+</ul>
+</body>
+</html>
