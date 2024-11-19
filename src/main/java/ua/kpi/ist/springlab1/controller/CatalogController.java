@@ -13,7 +13,6 @@ import ua.kpi.ist.springlab1.service.CatalogService;
 @Controller
 public class CatalogController {
 
-     //@Autowired
     private CatalogService catalogService;
 
     @Autowired

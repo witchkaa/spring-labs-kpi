@@ -4,13 +4,17 @@
     <title>Product Catalog</title>
 </head>
 <body>
-<h1>Product Catalog</h1>
+<h1 th:style="'color: ' + (${categories.size() == 0} ? 'red' : 'green')">Product Catalog</h1>
 
 <form action="/addCategory" method="post">
     <input type="text" name="categoryName" placeholder="New Category" required>
     <button type="submit">Add Category</button>
 </form>
-
+<div th:switch="${#lists.size(categories)}">
+    <div th:case="0">No categories added yet.</div>
+    <div th:case="1">Category</div>
+    <div th:case="*">Categories</div>
+</div>
 <ul>
     <li th:each="category : ${categories}">
         <div>
@@ -36,19 +40,15 @@
             </form>
         </div>
 
-        <!-- showing nested subcategories -->
         <ul th:each="subcategory : ${category.subcategories}">
             <li>
                 <div>
                     <strong th:text="${subcategory.name}"></strong>
-
-                    <!-- delete subcategory button -->
                     <form action="/deleteSubcategory" method="post" style="display:inline;">
                         <input type="hidden" name="categoryName" th:value="${subcategory.name}">
                         <button type="submit">Delete Subcategory</button>
                     </form>
 
-                    <!-- add product -->
                     <form action="/addProduct" method="post" style="display:inline;">
                         <input type="hidden" name="categoryName" th:value="${subcategory.name}">
                         <input type="text" name="productName" placeholder="Product Name" required>
@@ -58,7 +58,6 @@
                     </form>
                 </div>
 
-                <!-- for nested subcategories -->
                 <ul th:each="subsubcategory : ${subcategory.subcategories}">
                     <li th:insert="~{::li}"></li>
                 </ul>
@@ -74,15 +73,15 @@
                         </form>
                     </li>
                 </ul>
+                <div th:unless="${subcategory.products.size() > 0}">
+                    <p>No products here yet.</p>
+                </div>
             </li>
         </ul>
-
-        <!-- showing products in current category -->
         <ul th:if="${category.products.size() > 0}">
             <li th:each="product : ${category.products}">
                 <span th:text="${product.name} + ' - ' + ${product.description} + ' - $' + ${product.price}"></span>
 
-                <!-- delete product button -->
                 <form action="/deleteProduct" method="post" style="display:inline;">
                     <input type="hidden" name="productName" th:value="${product.name}">
                     <input type="hidden" name="categoryName" th:value="${category.name}">
