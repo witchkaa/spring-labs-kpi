@@ -6,49 +6,49 @@
 <body>
 <h1>Product Catalog</h1>
 
-<!-- Форма додавання нової категорії -->
 <form action="/addCategory" method="post">
     <input type="text" name="categoryName" placeholder="New Category" required>
     <button type="submit">Add Category</button>
 </form>
 
-<!-- Рекурсивний метод для відображення категорій та підкатегорій -->
 <ul>
     <li th:each="category : ${categories}">
         <div>
             <strong th:text="${category.name}"></strong>
 
-            <!-- Форма додавання підкатегорії до поточної категорії -->
+            <form action="/deleteCategory" method="post" style="display:inline;">
+                <input type="hidden" name="categoryName" th:value="${category.name}">
+                <button type="submit">Delete</button>
+            </form>
+
             <form action="/addSubcategory" method="post" style="display:inline;">
                 <input type="hidden" name="parentCategoryName" th:value="${category.name}">
                 <input type="text" name="subcategoryName" placeholder="New Subcategory" required>
-                <button type="submit">Add Subcategory</button>
+                <button type="submit">+</button>
             </form>
 
-            <!-- Форма додавання товару до поточної категорії -->
             <form action="/addProduct" method="post" style="display:inline;">
                 <input type="hidden" name="categoryName" th:value="${category.name}">
                 <input type="text" name="productName" placeholder="Product Name" required>
                 <input type="text" name="description" placeholder="Description" required>
                 <input type="number" name="price" placeholder="Price" required step="0.01">
-                <button type="submit">Add Product</button>
+                <button type="submit">+</button>
             </form>
         </div>
 
-        <!-- Рекурсивний виклик для відображення вкладених підкатегорій -->
+        <!-- showing nested subcategories -->
         <ul th:each="subcategory : ${category.subcategories}">
             <li>
                 <div>
                     <strong th:text="${subcategory.name}"></strong>
 
-                    <!-- Форма додавання підкатегорії до поточної підкатегорії -->
-                    <form action="/addSubcategory" method="post" style="display:inline;">
-                        <input type="hidden" name="parentCategoryName" th:value="${subcategory.name}">
-                        <input type="text" name="subcategoryName" placeholder="New Subcategory" required>
-                        <button type="submit">Add Subcategory</button>
+                    <!-- delete subcategory button -->
+                    <form action="/deleteSubcategory" method="post" style="display:inline;">
+                        <input type="hidden" name="categoryName" th:value="${subcategory.name}">
+                        <button type="submit">Delete Subcategory</button>
                     </form>
 
-                    <!-- Форма додавання товару до поточної підкатегорії -->
+                    <!-- add product -->
                     <form action="/addProduct" method="post" style="display:inline;">
                         <input type="hidden" name="categoryName" th:value="${subcategory.name}">
                         <input type="text" name="productName" placeholder="Product Name" required>
@@ -58,24 +58,36 @@
                     </form>
                 </div>
 
-                <!-- Рекурсивний виклик для вкладених підкатегорій -->
+                <!-- for nested subcategories -->
                 <ul th:each="subsubcategory : ${subcategory.subcategories}">
                     <li th:insert="~{::li}"></li>
                 </ul>
 
-                <!-- Відображення товарів у поточній підкатегорії -->
                 <ul th:if="${subcategory.products.size() > 0}">
                     <li th:each="product : ${subcategory.products}">
                         <span th:text="${product.name} + ' - ' + ${product.description} + ' - $' + ${product.price}"></span>
+
+                        <form action="/deleteProduct" method="post" style="display:inline;">
+                            <input type="hidden" name="productName" th:value="${product.name}">
+                            <input type="hidden" name="categoryName" th:value="${subcategory.name}">
+                            <button type="submit">Delete Product</button>
+                        </form>
                     </li>
                 </ul>
             </li>
         </ul>
 
-        <!-- Відображення товарів у поточній категорії -->
+        <!-- showing products in current category -->
         <ul th:if="${category.products.size() > 0}">
             <li th:each="product : ${category.products}">
                 <span th:text="${product.name} + ' - ' + ${product.description} + ' - $' + ${product.price}"></span>
+
+                <!-- delete product button -->
+                <form action="/deleteProduct" method="post" style="display:inline;">
+                    <input type="hidden" name="productName" th:value="${product.name}">
+                    <input type="hidden" name="categoryName" th:value="${category.name}">
+                    <button type="submit">Delete Product</button>
+                </form>
             </li>
         </ul>
     </li>

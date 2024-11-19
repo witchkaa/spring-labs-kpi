@@ -45,4 +45,16 @@ public class CatalogService {
     public void addProduct(String categoryName, Product product) {
         findCategoryByName(categoryName).ifPresent(category -> category.addProduct(product));
     }
+    public void deleteCategory(String categoryName) {
+        catalogRepository.deleteCategory(categoryName);
+    }
+
+    public void deleteProduct(String categoryName, String productName) {
+        findCategoryRecursively(categoryName, catalogRepository.getCategories())
+                .ifPresent(category -> category.removeProductByName(productName));
+    }
+    public void deleteSubcategory(String subcategoryName) {
+        findCategoryRecursively(subcategoryName, catalogRepository.getCategories())
+                .ifPresent(category -> category.removeSubcategoryByName(subcategoryName));
+    }
 }

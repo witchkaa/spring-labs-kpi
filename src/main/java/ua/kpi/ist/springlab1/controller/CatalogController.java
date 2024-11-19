@@ -13,7 +13,7 @@ import ua.kpi.ist.springlab1.service.CatalogService;
 @Controller
 public class CatalogController {
 
-    // @Autowired
+     //@Autowired
     private CatalogService catalogService;
 
     @Autowired
@@ -43,6 +43,22 @@ public class CatalogController {
     public String addProduct(@RequestParam String categoryName, @RequestParam String productName,
                              @RequestParam String description, @RequestParam double price) {
         catalogService.addProduct(categoryName, new Product(productName, description, price));
+        return "redirect:/";
+    }
+    @PostMapping("/deleteCategory")
+    public String deleteCategory(@RequestParam String categoryName) {
+        catalogService.deleteCategory(categoryName);
+        return "redirect:/";
+    }
+
+    @PostMapping("/deleteProduct")
+    public String deleteProduct(@RequestParam String categoryName, @RequestParam String productName) {
+        catalogService.deleteProduct(categoryName, productName);
+        return "redirect:/";
+    }
+    @PostMapping("/deleteSubcategory")
+    public String deleteSubcategory(@RequestParam String categoryName) {
+        catalogService.deleteSubcategory(categoryName);
         return "redirect:/";
     }
 }

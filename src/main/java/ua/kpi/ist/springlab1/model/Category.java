@@ -24,4 +24,10 @@ public class Category {
     public void addProduct(Product product) {
         products.add(product);
     }
+    public void removeProductByName(String productName) {
+        products.removeIf(product -> product.getName().equals(productName));
+    }
+    public void removeSubcategoryByName(String subcategoryName) {
+        subcategories.removeIf(subcategory -> subcategory.getName().equals(subcategoryName));
+    }
 }
