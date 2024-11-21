@@ -16,17 +16,3 @@ public class SpringLab2Application {
 
 }
 
-@Configuration
-class AppConfig {
-
-    // Singleton
-    @Bean
-    public CatalogRepository catalogRepository() {return new CatalogRepository();}
-
-    // Prototype
-    @Bean
-    @Scope("prototype")
-    public Product product() {
-        return new Product();
-    }
-}
