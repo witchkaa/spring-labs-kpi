@@ -41,7 +41,7 @@ public class CatalogController {
     @PostMapping("/addProduct")
     public String addProduct(@RequestParam String categoryName, @RequestParam String productName,
                              @RequestParam String description, @RequestParam double price) {
-        catalogService.addProduct(categoryName, new Product(productName, description, price));
+        catalogService.addProduct(categoryName, new Product(1L, productName, description, price));
         return "redirect:/";
     }
     @PostMapping("/deleteCategory")
