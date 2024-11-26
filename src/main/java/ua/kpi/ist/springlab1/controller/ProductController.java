@@ -8,11 +8,15 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,16 +37,27 @@ public class ProductController {
     ObjectMapper objectMapper;
 
     @Operation(
-
             summary = "Get all",
-            description = "Get a list of all products"
+            description = "Get a paginated and optionally filtered list of products",
+            parameters = {
+            @Parameter(name = "page", in = ParameterIn.QUERY, description = "Page number for pagination (0-based)", required = false, schema = @Schema(type = "integer", example = "0")),
+            @Parameter(name = "size", in = ParameterIn.QUERY, description = "Number of products per page", required = false, schema = @Schema(type = "integer", example = "2")),
+            @Parameter(name = "name", in = ParameterIn.QUERY, description = "Filter products by name (partial match)", required = false, schema = @Schema(type = "string", example = "shirt")),
+            @Parameter(name = "description", in = ParameterIn.QUERY, description = "Filter products by description (partial match)", required = false, schema = @Schema(type = "string", example = "cotton")),
+            @Parameter(name = "minPrice", in = ParameterIn.QUERY, description = "Filter products with price greater than or equal to", required = false, schema = @Schema(type = "number", format = "float", example = "80")),
+            @Parameter(name = "maxPrice", in = ParameterIn.QUERY, description = "Filter products with price less than or equal to", required = false, schema = @Schema(type = "number", format = "float", example = "180"))
+    }
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Success"),
     })
     @GetMapping
-    Iterable<Product> getAllProducts() {
-        return productRepository.findAll();
+    public Page<Product> getAllProducts(Pageable pageable,
+                                        @RequestParam(required = false) String name,
+                                        @RequestParam(required = false) String description,
+                                        @RequestParam(required = false) Double minPrice,
+                                        @RequestParam(required = false) Double maxPrice) {
+        return productRepository.findAll(pageable, name, description, minPrice, maxPrice);
     }
 
     @Operation(
