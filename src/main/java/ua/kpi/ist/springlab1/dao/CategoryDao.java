@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ua.kpi.ist.springlab1.model.Category;
+import ua.kpi.ist.springlab1.service.CategoryProductDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,5 +75,20 @@ public class CategoryDao {
     public void linkProductToCategory(Long categoryId, Long productId) {
         String sql = "INSERT INTO category_product (category_id, product_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, categoryId, productId);
+    }
+    public List<CategoryProductDto> getCategoryProductRelations() {
+        String sql = "SELECT cp.category_id, c.name AS category_name, cp.product_id, p.name AS product_name " +
+                "FROM category_product cp " +
+                "JOIN categories c ON cp.category_id = c.id " +
+                "JOIN products p ON cp.product_id = p.id";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                new CategoryProductDto(
+                        rs.getLong("category_id"),
+                        rs.getString("category_name"),
+                        rs.getLong("product_id"),
+                        rs.getString("product_name")
+                )
+        );
     }
 }

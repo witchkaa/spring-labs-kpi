@@ -2,12 +2,14 @@ package ua.kpi.ist.springlab1.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.kpi.ist.springlab1.model.Category;
 import ua.kpi.ist.springlab1.model.Product;
+import ua.kpi.ist.springlab1.service.CategoryProductDto;
 import ua.kpi.ist.springlab1.service.CategoryService;
 
 import java.util.List;
@@ -116,5 +118,19 @@ public class CategoryController {
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            summary = "Get all category-product relations",
+            description = "Retrieve a list of all categories with their associated products."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved category-product relations"),
+            @ApiResponse(responseCode = "500", description = "An error occurred while retrieving the relations")
+    })
+    @GetMapping("/products")
+    public ResponseEntity<List<CategoryProductDto>> getCategoryProductRelations() {
+        List<CategoryProductDto> relations = categoryService.getCategoryProductRelations();
+        return ResponseEntity.ok(relations);
     }
 }

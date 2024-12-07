@@ -49,4 +49,7 @@ public class CategoryService {
             categoryDao.linkProductToCategory(categoryId, productId);
         }
     }
+    public List<CategoryProductDto> getCategoryProductRelations() {
+        return categoryDao.getCategoryProductRelations();
+    }
 }
