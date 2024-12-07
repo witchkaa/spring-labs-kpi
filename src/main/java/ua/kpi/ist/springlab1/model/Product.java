@@ -2,10 +2,13 @@ package ua.kpi.ist.springlab1.model;
 
 import lombok.*;
 
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product {
-    Long id;
-    String name;
-    String description;
-    double price;
+    private Long id;
+    private String name;
+    private String description;
+    private double price;
+    private Long categoryId;
 }

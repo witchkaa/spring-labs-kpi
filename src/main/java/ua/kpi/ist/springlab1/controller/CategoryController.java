@@ -1,77 +1,65 @@
 package ua.kpi.ist.springlab1.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.kpi.ist.springlab1.model.Category;
-import ua.kpi.ist.springlab1.service.CatalogService;
+import ua.kpi.ist.springlab1.model.Product;
+import ua.kpi.ist.springlab1.service.CategoryService;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
 public class CategoryController {
+    private final CategoryService categoryService;
+    @PostMapping("/{categoryId}/products")
+    public ResponseEntity<String> addProductsToCategory(
+            @PathVariable Long categoryId,
+            @RequestBody List<Product> products) {
 
-    private final CatalogService catalogService;
-
-    @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
-        catalogService.addCategory(category);
-        return ResponseEntity.status(HttpStatus.CREATED).body(category);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Category>> getCategories(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String nameFilter) {
-        List<Category> categories = catalogService.getAllCategories();
-
-        if (nameFilter != null) {
-            categories = categories.stream()
-                    .filter(cat -> cat.getName().toLowerCase().contains(nameFilter.toLowerCase()))
-                    .collect(Collectors.toList());
+        try {
+            categoryService.addProductsToCategory(categoryId, products);
+            return ResponseEntity.ok("Products added successfully to category");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body("Category not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred while adding products to category");
         }
-
-        int start = Math.min(page * size, categories.size());
-        int end = Math.min((page + 1) * size, categories.size());
-
-        return ResponseEntity.ok(categories.subList(start, end));
+    }
+    @GetMapping
+    public List<Category> getAllCategories() {
+        return categoryService.getAllCategories();
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<Category> getCategory(@PathVariable String name) {
-        return catalogService.findCategoryByName(name)
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+        return categoryService.getCategoryById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{name}")
-    public ResponseEntity<Category> updateCategory(
-            @PathVariable String name,
-            @RequestBody Category updatedCategory) {
-        Optional<Category> categoryOpt = catalogService.findCategoryByName(name);
-
-        if (categoryOpt.isPresent()) {
-            Category category = categoryOpt.get();
-            category.setName(updatedCategory.getName());
-            return ResponseEntity.ok(category);
-        }
-        return ResponseEntity.notFound().build();
+    @PostMapping
+    public ResponseEntity<Long> addCategory(@RequestBody Category category) {
+        Long generatedId = categoryService.addCategory(category);
+        return ResponseEntity.ok(generatedId);
+    }
+    @GetMapping("/search")
+    public List<Category> searchCategories(@RequestParam String name) {
+        return categoryService.searchCategories(name);
     }
 
-    @DeleteMapping("/{name}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable String name) {
-        Optional<Category> categoryOpt = catalogService.findCategoryByName(name);
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateCategory(@PathVariable Long id, @RequestBody Category category) {
+        category.setId(id);
+        categoryService.updateCategory(category);
+        return ResponseEntity.ok().build();
+    }
 
-        if (categoryOpt.isPresent()) {
-            catalogService.deleteCategory(name);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
     }
 }
