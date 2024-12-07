@@ -71,7 +71,7 @@ public class CategoryDao {
         String sql = "DELETE FROM categories WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
-    public void linkProductToCategory(Long categoryId, Long productId) {
+    public void linkProductToCategory(Long categoryId, int productId) {
         String sql = "INSERT INTO category_product (category_id, product_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, categoryId, productId);
     }

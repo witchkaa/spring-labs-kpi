@@ -16,9 +16,9 @@ public class ProductDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public Long create(Product product) {
-        String sql = "INSERT INTO products (name, price, category_id) VALUES (?, ?, ?) RETURNING id";
-        return jdbcTemplate.queryForObject(sql, Long.class, product.getName(), product.getPrice(), product.getCategoryId());
+    public int create(Product product) {
+        String sql = "INSERT INTO products (name, price) VALUES (?, ?)";
+        return jdbcTemplate.update(sql, product.getName(), product.getPrice());
     }
 
     public Optional<Product> findById(Long id) {
@@ -37,17 +37,12 @@ public class ProductDao {
     }
 
     public void update(Product product) {
-        String sql = "UPDATE products SET name = ?, price = ?, category_id = ? WHERE id = ?";
-        jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getCategoryId(), product.getId());
+        String sql = "UPDATE products SET name = ?, price = ? WHERE id = ?";
+        jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getId());
     }
 
     public void delete(Long id) {
         String sql = "DELETE FROM products WHERE id = ?";
         jdbcTemplate.update(sql, id);
-    }
-
-    public List<Product> findByCategoryId(Long categoryId) {
-        String sql = "SELECT * FROM products WHERE category_id = ?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Product.class), categoryId);
     }
 }

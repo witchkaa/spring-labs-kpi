@@ -21,7 +21,7 @@ public class ProductService {
         return productDao.findById(id);
     }
 
-    public Long addProduct(Product product) {
+    public int addProduct(Product product) {
         return productDao.create(product);
     }
 

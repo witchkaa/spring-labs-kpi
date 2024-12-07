@@ -46,7 +46,7 @@ public class CategoryService {
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
         for (Product product : products) {
-            Long productId = productDao.create(product);
+            int productId = productDao.create(product);
             categoryDao.linkProductToCategory(categoryId, productId);
         }
     }
