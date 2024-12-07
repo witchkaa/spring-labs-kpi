@@ -4,10 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ua.kpi.ist.springlab1.model.Product;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -17,8 +22,17 @@ public class ProductDao {
     private final JdbcTemplate jdbcTemplate;
 
     public int create(Product product) {
-        String sql = "INSERT INTO products (name, price) VALUES (?, ?)";
-        return jdbcTemplate.update(sql, product.getName(), product.getPrice());
+        String sql = "INSERT INTO products (name, price) VALUES (?, ?)";  // Приклад SQL-запиту
+        KeyHolder keyHolder = new GeneratedKeyHolder();  // Для отримання згенерованого ключа
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, product.getName());
+            ps.setDouble(2, product.getPrice());
+            return ps;
+        }, keyHolder);
+
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
     public Optional<Product> findById(Long id) {

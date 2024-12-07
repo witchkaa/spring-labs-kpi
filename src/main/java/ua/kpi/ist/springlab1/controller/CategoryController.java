@@ -39,6 +39,7 @@ public class CategoryController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body("Category not found");
         } catch (Exception e) {
+            System.out.println(e.getCause());
             return ResponseEntity.status(500).body("An error occurred while adding products to category");
         }
     }

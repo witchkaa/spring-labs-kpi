@@ -11,6 +11,7 @@ import ua.kpi.ist.springlab1.model.Product;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -42,11 +43,9 @@ public class CategoryService {
 
     @Transactional
     public void addProductsToCategory(Long categoryId, List<Product> products) {
-        Category category = categoryDao.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-
         for (Product product : products) {
-            int productId = productDao.create(product);
+            Long productId = (long) productDao.create(product);
+
             categoryDao.linkProductToCategory(categoryId, productId);
         }
     }
