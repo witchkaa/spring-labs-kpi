@@ -12,6 +12,7 @@ import ua.kpi.ist.springlab1.model.Product;
 import ua.kpi.ist.springlab1.service.CategoryProductDto;
 import ua.kpi.ist.springlab1.service.CategoryService;
 
+import java.util.Collections;
 import java.util.List;
 
 @Tag(name = "Categories", description = "Operations related to categories")
@@ -76,8 +77,8 @@ public class CategoryController {
     )
     @PostMapping
     public ResponseEntity<Long> addCategory(@RequestBody Category category) {
-        Long generatedId = categoryService.addCategory(category);
-        return ResponseEntity.ok(generatedId);
+        Category c = categoryService.addCategory(category);
+        return ResponseEntity.ok(c.getId());
     }
     @Operation(
             summary = "Search categories by name",
@@ -90,7 +91,14 @@ public class CategoryController {
     public List<Category> searchCategories(@RequestParam String name) {
         return categoryService.searchCategories(name);
     }
-
+    @GetMapping("/find")
+    public ResponseEntity<List<Category>> findCategory(@RequestParam String name) {
+        List<Category> categories = categoryService.findByName(name);
+        if (categories.isEmpty()) {
+            return ResponseEntity.status(404).body(Collections.emptyList());
+        }
+        return ResponseEntity.ok(categories);
+    }
     @Operation(
             summary = "Update a category",
             description = "Update the details of an existing category by its ID.",

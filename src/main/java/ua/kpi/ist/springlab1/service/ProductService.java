@@ -2,8 +2,8 @@ package ua.kpi.ist.springlab1.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ua.kpi.ist.springlab1.dao.ProductDao;
 import ua.kpi.ist.springlab1.model.Product;
+import ua.kpi.ist.springlab1.repository.ProductRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,25 +11,25 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
     public List<Product> getAllProducts() {
-        return productDao.findAll();
+        return productRepository.findAll();
     }
 
     public Optional<Product> getProductById(Long id) {
-        return productDao.findById(id);
+        return productRepository.findById(id);
     }
 
-    public int addProduct(Product product) {
-        return productDao.create(product);
+    public Product addProduct(Product product) {
+        return productRepository.save(product);
     }
 
     public void updateProduct(Product product) {
-        productDao.update(product);
+        productRepository.save(product);
     }
 
     public void deleteProduct(Long id) {
-        productDao.delete(id);
+        productRepository.deleteById(id);
     }
 }
