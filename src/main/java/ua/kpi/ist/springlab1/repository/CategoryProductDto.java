@@ -1,4 +1,4 @@
-package ua.kpi.ist.springlab1.service;
+package ua.kpi.ist.springlab1.repository;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

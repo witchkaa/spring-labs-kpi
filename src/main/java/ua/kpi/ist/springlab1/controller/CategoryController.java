@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.kpi.ist.springlab1.model.Category;
 import ua.kpi.ist.springlab1.model.Product;
-import ua.kpi.ist.springlab1.service.CategoryProductDto;
+import ua.kpi.ist.springlab1.repository.CategoryProductDto;
 import ua.kpi.ist.springlab1.service.CategoryService;
 
 import java.util.Collections;

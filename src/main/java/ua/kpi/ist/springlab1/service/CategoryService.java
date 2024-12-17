@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.kpi.ist.springlab1.model.Category;
 import ua.kpi.ist.springlab1.model.Product;
+import ua.kpi.ist.springlab1.repository.CategoryProductDto;
 import ua.kpi.ist.springlab1.repository.CategoryRepository;
 import ua.kpi.ist.springlab1.repository.ProductRepository;
 
@@ -19,7 +20,7 @@ public class CategoryService {
     private final ProductRepository productRepository;
 
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        return (List<Category>) categoryRepository.findAll();
     }
 
     public Optional<Category> getCategoryById(Long id) {
@@ -52,8 +53,9 @@ public class CategoryService {
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
         for (Product product : products) {
-            Product savedProduct = productRepository.save(product);
-            category.getProducts().add(savedProduct);
+            product.setCategory(category);
+            productRepository.save(product);
+            category.getProducts().add(product);
         }
 
         categoryRepository.save(category);
