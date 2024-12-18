@@ -31,20 +31,6 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.fge</groupId>
-            <artifactId>json-patch</artifactId>
-            <version>1.9</version>
-        </dependency>
-        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.2.0</version>
@@ -53,12 +39,6 @@
         <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-annotations</artifactId>
         <version>2.1.6</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-            <version>3.3.5</version>
         </dependency>
 
         <dependency>
@@ -71,32 +51,21 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api -->
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>3.4.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>3.4.0</version>
         </dependency>
-
-
     </dependencies>
 
     <build>

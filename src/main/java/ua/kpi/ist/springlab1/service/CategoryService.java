@@ -43,8 +43,8 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    public List<Category> findByName(String description) {
-        return categoryRepository.findByName(description);
+    public List<Category> findByName(String name) {
+        return categoryRepository.findByName(name);
     }
 
     @Transactional
@@ -53,9 +53,8 @@ public class CategoryService {
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
         for (Product product : products) {
-            product.setCategory(category);
-            productRepository.save(product);
-            category.getProducts().add(product);
+            Product savedProduct = productRepository.save(product);
+            category.getProducts().add(savedProduct);
         }
 
         categoryRepository.save(category);
