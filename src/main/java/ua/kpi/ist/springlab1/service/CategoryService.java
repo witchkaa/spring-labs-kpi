@@ -53,6 +53,7 @@ public class CategoryService {
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
         for (Product product : products) {
+            product.setCategory(category);
             Product savedProduct = productRepository.save(product);
             category.getProducts().add(savedProduct);
         }
@@ -61,6 +62,15 @@ public class CategoryService {
     }
 
     public List<CategoryProductDto> getCategoryProductRelations() {
-        return categoryRepository.getCategoryProductRelations();
+        List<Object[]> rawResults = categoryRepository.getCategoryProductRelations();
+
+        return rawResults.stream()
+                .map(row -> new CategoryProductDto(
+                        ((Number) row[0]).longValue(),
+                        (String) row[1],
+                        row[2] != null ? ((Number) row[2]).longValue() : null,
+                        (String) row[3]
+                ))
+                .toList();
     }
 }
